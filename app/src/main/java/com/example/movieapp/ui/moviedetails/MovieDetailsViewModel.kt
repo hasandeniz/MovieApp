@@ -26,13 +26,16 @@ class MovieDetailsViewModel @Inject constructor(private var movieRepository: Mov
     val viewState : StateFlow<MovieDetailsViewState> get() = _viewState.asStateFlow()
 
     private val movieDetailsLiveData = MutableLiveData<MovieDetailsResponse>()
-    val isFavoriteLiveData = MutableLiveData<Boolean>()
+
+    private val _isFavoriteLiveData = MutableLiveData<Boolean>()
+    val isFavoriteLiveData : LiveData<Boolean> get() = _isFavoriteLiveData
+
 
     fun isFavorite(imdbId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val favoritesList = favoritesRepository.getAllFavoriteMovies()
             val groupedFavorites = favoritesList.groupBy(Movie::imdbId)
-            isFavoriteLiveData.postValue(!groupedFavorites[imdbId].isNullOrEmpty())
+            _isFavoriteLiveData.postValue(!groupedFavorites[imdbId].isNullOrEmpty())
         }
     }
 
