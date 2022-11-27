@@ -1,6 +1,7 @@
 package com.example.movieapp.ui.moviedetails
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.core.view.MenuHost
@@ -16,7 +17,6 @@ import com.example.movieapp.databinding.FragmentMovieDetailsBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-
 
 @AndroidEntryPoint
 class MovieDetailsFragment : Fragment() {
@@ -42,8 +42,13 @@ class MovieDetailsFragment : Fragment() {
         movieDetailsViewModel.isFavorite(args.imdbId)
         adjustFavoritesIcon()
 
-        movieDetailsViewModel.getMovieByImdbId(args.imdbId)
+        if (args.isFavorite)
+            movieDetailsViewModel.getMovieDetailsByImdbIdFromDb(args.imdbId)
+        else
+            movieDetailsViewModel.getMovieDetailsByImdbIdFromApi(args.imdbId)
+
         observeData()
+
 
     }
 
@@ -79,6 +84,7 @@ class MovieDetailsFragment : Fragment() {
                     binding.isLoading = movieViewState.isLoading
 
                     movieViewState.movieDetailsResponse?.observe(viewLifecycleOwner){
+                        Log.d("logger", it.toString())
                         binding.details = it
                     }
                 }

@@ -8,7 +8,7 @@ import com.example.movieapp.retrofit.MovieDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class MovieDataSource(var movieDao: MovieDao) {
+class MovieDataSource(private var movieDao: MovieDao) {
 
     fun searchMovieByTitle(title: String) =
        Pager(
@@ -19,13 +19,13 @@ class MovieDataSource(var movieDao: MovieDao) {
             pagingSourceFactory = { MoviePagingSource(movieDao, title) }
         ).flow
 
-    suspend fun getMovieByImdbId(imdbID: String): MovieDetailsResponse =
+    suspend fun getMovieDetailsByImdbIdFromApi(imdbID: String): MovieDetailsResponse =
         withContext(Dispatchers.IO){
             try{
-                movieDao.getMovieByImdbId(imdbID)
+                movieDao.getMovieDetailsByImdbIdFromApi(imdbID)
             }catch (exception: Exception){
                 Log.e("MovieDataSource",exception.message,exception)
-                MovieDetailsResponse(error = exception.message)
+                MovieDetailsResponse(error = exception.message, imdbId = "")
             }
         }
 }

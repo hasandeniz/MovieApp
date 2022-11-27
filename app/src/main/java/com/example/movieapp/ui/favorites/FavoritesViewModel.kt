@@ -37,4 +37,12 @@ class FavoritesViewModel @Inject constructor(private var favoritesRepository: Fa
         }
     }
 
+    fun removeMovieDetailsFromFavorites(movie: Movie) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val id = favoritesRepository.getMovieDetailsByImdbIdFromDb(movie.imdbId).id
+            favoritesRepository.deleteMovieDetails(id)
+            Log.d("MovieListViewModel", "${movie.title} details removed from database")
+        }
+    }
+
 }

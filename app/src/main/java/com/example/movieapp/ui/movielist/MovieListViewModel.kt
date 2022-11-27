@@ -26,7 +26,6 @@ class MovieListViewModel @Inject constructor(private var movieRepository: MovieR
     var index = 1
 
     init {
-        //viewModelScope.launch(Dispatchers.IO) {favoritesRepository.removeAllMoviesFromFavorites()}
         getAllFavorites()
     }
 
@@ -75,6 +74,22 @@ class MovieListViewModel @Inject constructor(private var movieRepository: MovieR
         viewModelScope.launch(Dispatchers.IO) {
             favorites.clear()
             favorites.addAll(favoritesRepository.getAllFavoriteMovies())
+        }
+    }
+
+    fun saveMovieDetailsToFavorites(movie: Movie) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val movieDetails = movieRepository.getMovieDetailsByImdbIdFromApi(movie.imdbId)
+            favoritesRepository.saveMovieDetails(movieDetails)
+            Log.d("MovieListViewModel", "${movieDetails.title} details saved to database")
+        }
+    }
+
+    fun removeMovieDetailsFromFavorites(movie: Movie) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val id = favoritesRepository.getMovieDetailsByImdbIdFromDb(movie.imdbId).id
+            favoritesRepository.deleteMovieDetails(id)
+            Log.d("MovieListViewModel", "${movie.title} details removed from database")
         }
     }
 

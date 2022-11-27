@@ -37,6 +37,7 @@ class FavoritesFragment : Fragment() {
         favoritesAdapter = FavoritesAdapter(MovieListAdapter.FavoritesListener { movie, button ->
             (button as ImageButton).setImageResource(R.drawable.ic_not_favorite)
             favoritesViewModel.removeMovieFromFavorites(movie)
+            favoritesViewModel.removeMovieDetailsFromFavorites(movie)
             Toast.makeText(context,"${movie.title} Removed from Favorites", Toast.LENGTH_SHORT).show()
 
         })
@@ -46,11 +47,11 @@ class FavoritesFragment : Fragment() {
     }
 
     private fun observeData() {
-            viewLifecycleOwner.lifecycleScope.launch{
-                favoritesViewModel.favoritesLiveData.observe(viewLifecycleOwner){ favoritesList->
-                    favoritesAdapter.submitList(favoritesList)
-                }
+        viewLifecycleOwner.lifecycleScope.launch{
+            favoritesViewModel.favoritesLiveData.observe(viewLifecycleOwner){ favoritesList->
+                favoritesAdapter.submitList(favoritesList)
             }
+        }
     }
 
     override fun onDestroyView() {

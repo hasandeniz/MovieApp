@@ -12,7 +12,8 @@ import com.example.movieapp.data.model.Movie
 import com.example.movieapp.databinding.MovieListItemBinding
 import com.example.movieapp.databinding.SeparatorItemBinding
 
-class MovieListAdapter(private val clickListener: FavoritesListener, private val favoritesList: ArrayList<Movie>) : PagingDataAdapter<UiModel, ViewHolder>(MovieListUtil()) {
+class MovieListAdapter(private val clickListener: FavoritesListener,
+                       private val favoritesList: ArrayList<Movie>) : PagingDataAdapter<UiModel, ViewHolder>(MovieListUtil()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return if (viewType == R.layout.movie_list_item){
@@ -33,26 +34,29 @@ class MovieListAdapter(private val clickListener: FavoritesListener, private val
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val uiModel = getItem(position)
-        uiModel.let {
-            when (uiModel){
-                is UiModel.MovieItem -> (holder as MoviesViewHolder).bind(uiModel, clickListener, favoritesList)
-                is UiModel.SeparatorItem -> (holder as SeparatorViewHolder).bind(uiModel)
-                else -> {}
-            }
-            if (holder is MoviesViewHolder && uiModel is UiModel.MovieItem){
-                val binding = holder.mbinding
-                binding.cvMovieListItem.setOnClickListener {
-                    val action = MovieListFragmentDirections.actionNavigationMovieListToMovieDetailsFragment(uiModel.movie.imdbId, uiModel.movie.title)
-                    Navigation.findNavController(it).navigate(action)
+        getItem(position)?.let {
+            val uiModel = getItem(position)
+            uiModel.let {
+                when (uiModel){
+                    is UiModel.MovieItem -> (holder as MoviesViewHolder).bind(uiModel, clickListener, favoritesList)
+                    is UiModel.SeparatorItem -> (holder as SeparatorViewHolder).bind(uiModel)
+                    else -> {}
+                }
+                if (holder is MoviesViewHolder && uiModel is UiModel.MovieItem){
+                    val binding = holder.mbinding
+                    binding.cvMovieListItem.setOnClickListener {
+                        val action = MovieListFragmentDirections.actionNavigationMovieListToMovieDetailsFragment(uiModel.movie.imdbId, uiModel.movie.title,false)
+                        Navigation.findNavController(it).navigate(action)
+                    }
+
+                    binding.ibMovieItemFav.setOnClickListener {
+                        clickListener.onClick(uiModel.movie,it)
+                    }
                 }
 
-                binding.ibMovieItemFav.setOnClickListener {
-                    clickListener.onClick(uiModel.movie,it)
-                }
             }
-
         }
+
     }
 
     class MoviesViewHolder(private val binding: MovieListItemBinding) : ViewHolder(binding.root) {
@@ -90,11 +94,6 @@ class MovieListAdapter(private val clickListener: FavoritesListener, private val
         override fun areContentsTheSame(oldItem: UiModel, newItem: UiModel): Boolean {
             return (oldItem == newItem)
         }
-    }
-
-    fun updateFavorites(favorites: List<Movie>){
-        favoritesList.clear()
-        favoritesList.addAll(favorites)
     }
 
     class FavoritesListener(val clickListener: (movie: Movie, view: View) -> Unit){

@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MovieDetailsViewModel @Inject constructor(private var movieRepository: MovieRepository,
-                                               private var favoritesRepository: FavoritesRepository ) : ViewModel(){
+                                                private var favoritesRepository: FavoritesRepository ) : ViewModel(){
 
     private val _viewState = MutableStateFlow(MovieDetailsViewState())
     val viewState : StateFlow<MovieDetailsViewState> get() = _viewState.asStateFlow()
@@ -36,14 +36,12 @@ class MovieDetailsViewModel @Inject constructor(private var movieRepository: Mov
         }
     }
 
-    fun getMovieByImdbId(imdbId: String){
+    fun getMovieDetailsByImdbIdFromApi(imdbId: String){
         viewModelScope.launch {
             _viewState.update {
-                it.copy(
-                    isLoading = true
-                )
+                it.copy(isLoading = true)
             }
-            val movieDetails = movieRepository.getMovieByImdbId(imdbId)
+            val movieDetails = movieRepository.getMovieDetailsByImdbIdFromApi(imdbId)
             if (movieDetails.response == "True"){
                 movieDetailsLiveData.value = movieDetails
                 _viewState.update {
@@ -56,6 +54,21 @@ class MovieDetailsViewModel @Inject constructor(private var movieRepository: Mov
                 addErrorToList(movieDetails.error)
             }
 
+        }
+    }
+
+    fun getMovieDetailsByImdbIdFromDb(imdbId: String){
+        viewModelScope.launch(Dispatchers.IO) {
+            _viewState.update {
+                it.copy(isLoading = true)
+            }
+            movieDetailsLiveData.postValue(favoritesRepository.getMovieDetailsByImdbIdFromDb(imdbId))
+            _viewState.update {
+                it.copy(
+                    isLoading = false,
+                    movieDetailsResponse = movieDetailsLiveData
+                )
+            }
         }
     }
 

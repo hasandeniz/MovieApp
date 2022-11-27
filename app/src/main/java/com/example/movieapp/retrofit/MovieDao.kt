@@ -12,6 +12,6 @@ interface MovieDao {
     suspend fun searchMovieByTitle(@Query("s") Title: String, @Query("page") Page: Int): MoviesResponse
 
     @GET("?apikey=${BuildConfig.API_KEY}")
-    suspend fun getMovieByImdbId(@Query("i") imdbId: String): MovieDetailsResponse
+    suspend fun getMovieDetailsByImdbIdFromApi(@Query("i") imdbId: String): MovieDetailsResponse
 
 }

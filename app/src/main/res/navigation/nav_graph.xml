@@ -28,10 +28,17 @@
         <argument
             android:name="title"
             app:argType="string" />
+        <argument
+            android:name="isFavorite"
+            app:argType="boolean" />
     </fragment>
     <fragment
         android:id="@+id/favoritesFragment"
         android:name="com.example.movieapp.ui.favorites.FavoritesFragment"
         android:label="Favorites"
-        tools:layout="@layout/fragment_favorites"/>
+        tools:layout="@layout/fragment_favorites">
+        <action
+            android:id="@+id/action_favoritesFragment_to_movieDetailsFragment"
+            app:destination="@id/movieDetailsFragment" />
+    </fragment>
 </navigation>

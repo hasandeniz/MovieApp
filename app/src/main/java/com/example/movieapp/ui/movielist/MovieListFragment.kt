@@ -1,6 +1,11 @@
 package com.example.movieapp.ui.movielist
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.ImageButton
 import android.widget.Toast
@@ -19,6 +24,7 @@ import com.example.movieapp.databinding.FragmentMovieListBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+
 
 @AndroidEntryPoint
 class MovieListFragment : Fragment() {
@@ -42,18 +48,27 @@ class MovieListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         movieListViewModel.getAllFavorites()
         movieListAdapter = MovieListAdapter(MovieListAdapter.FavoritesListener { movie, button ->
-            if (button.tag == "not favorite") {
-                button.tag = "favorite"
-                (button as ImageButton).setImageResource(R.drawable.ic_favorite)
-                movieListViewModel.saveMovieToFavorites(movie)
-                Toast.makeText(context,"${movie.title} Added to Favorites",Toast.LENGTH_SHORT).show()
+
+            if (isOnline()){
+                if (button.tag == "not favorite") {
+                    button.tag = "favorite"
+                    (button as ImageButton).setImageResource(R.drawable.ic_favorite)
+                    movieListViewModel.saveMovieToFavorites(movie)
+                    movieListViewModel.saveMovieDetailsToFavorites(movie)
+                    Toast.makeText(context,"${movie.title} Added to Favorites",Toast.LENGTH_SHORT).show()
+                }
+                else{
+                    button.tag = "not favorite"
+                    (button as ImageButton).setImageResource(R.drawable.ic_not_favorite)
+                    movieListViewModel.removeMovieFromFavorites(movie)
+                    movieListViewModel.removeMovieDetailsFromFavorites(movie)
+                    Toast.makeText(context,"${movie.title} Removed from Favorites",Toast.LENGTH_SHORT).show()
+                }
+            }else{
+                Toast.makeText(context,"No internet connection",Toast.LENGTH_SHORT).show()
+
             }
-            else{
-                button.tag = "not favorite"
-                (button as ImageButton).setImageResource(R.drawable.ic_not_favorite)
-                movieListViewModel.removeMovieFromFavorites(movie)
-                Toast.makeText(context,"${movie.title} Removed from Favorites",Toast.LENGTH_SHORT).show()
-            }
+
 
         },movieListViewModel.favorites)
 
@@ -65,6 +80,34 @@ class MovieListFragment : Fragment() {
 
     }
 
+    private fun isOnline(): Boolean {
+        val connectivityManager =
+            requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val capabilities =
+                connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+            if (capabilities != null) {
+                if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_CELLULAR")
+                    return true
+                } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_WIFI")
+                    return true
+                } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
+                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_ETHERNET")
+                    return true
+                }
+            }
+            return false
+        }else{
+            if (connectivityManager.activeNetworkInfo != null && connectivityManager.activeNetworkInfo!!.isConnectedOrConnecting) {
+                return true
+            }
+            return false
+        }
+
+    }
 
     private fun adjustToolbarMenu(view: View){
         val menuHost = requireActivity() as MenuHost

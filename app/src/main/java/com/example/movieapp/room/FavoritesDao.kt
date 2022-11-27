@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import com.example.movieapp.data.model.Movie
+import com.example.movieapp.data.model.MovieDetailsResponse
 
 @Dao
 interface FavoritesDao {
@@ -17,10 +18,16 @@ interface FavoritesDao {
     @Query("DELETE FROM movies WHERE id = :id")
     suspend fun removeMovieFromFavorites(id: Int)
 
-    @Query("DELETE FROM movies")
-    suspend fun removeAllMoviesFromFavorites()
-
     @Query("SELECT * FROM movies")
     suspend fun getAllFavoriteMovies() : List<Movie>
+
+    @Insert
+    suspend fun saveMovieDetails(movieDetailsResponse: MovieDetailsResponse)
+
+    @Query("DELETE FROM movie_details WHERE id =:id")
+    suspend fun deleteMovieDetails(id: Int)
+
+    @Query("SELECT * FROM movie_details WHERE imdbId =:id")
+    suspend fun getMovieDetailsByImdbIdFromDb(id: String): MovieDetailsResponse
 
 }

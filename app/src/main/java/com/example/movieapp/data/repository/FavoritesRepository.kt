@@ -2,8 +2,9 @@ package com.example.movieapp.data.repository
 
 import com.example.movieapp.data.datasource.FavoritesDataSource
 import com.example.movieapp.data.model.Movie
+import com.example.movieapp.data.model.MovieDetailsResponse
 
-class FavoritesRepository(var favoritesDataSource: FavoritesDataSource) {
+class FavoritesRepository(private var favoritesDataSource: FavoritesDataSource) {
 
     suspend fun getAllFavoriteMovies(): List<Movie> = favoritesDataSource.getAllFavoriteMovies()
 
@@ -11,7 +12,11 @@ class FavoritesRepository(var favoritesDataSource: FavoritesDataSource) {
 
     suspend fun removeMovieFromFavorites(id: Int) = favoritesDataSource.removeMovieFromFavorites(id)
 
-    suspend fun removeAllMoviesFromFavorites() = favoritesDataSource.removeAllMoviesFromFavorites()
-
     suspend fun getFavoriteMovieByImdbId(id: String): Movie = favoritesDataSource.getFavoriteMovieByImdbId(id)
+
+    suspend fun saveMovieDetails(movieDetailsResponse: MovieDetailsResponse) = favoritesDataSource.saveMovieDetails(movieDetailsResponse)
+
+    suspend fun deleteMovieDetails(id: Int) = favoritesDataSource.deleteMovieDetails(id)
+
+    suspend fun getMovieDetailsByImdbIdFromDb(imdbId: String): MovieDetailsResponse = favoritesDataSource.getMovieDetailsByImdbIdFromDb(imdbId)
 }

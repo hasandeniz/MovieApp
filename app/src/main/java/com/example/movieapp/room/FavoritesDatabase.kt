@@ -5,8 +5,9 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.movieapp.data.model.Movie
+import com.example.movieapp.data.model.MovieDetailsResponse
 
-@Database(entities = [Movie::class], version = 1, exportSchema = false)
+@Database(entities = [Movie::class, MovieDetailsResponse::class], version = 2, exportSchema = false)
 abstract class FavoritesDatabase: RoomDatabase() {
     abstract fun movieDatabaseDao(): FavoritesDao
 
@@ -19,7 +20,8 @@ abstract class FavoritesDatabase: RoomDatabase() {
                     context.applicationContext,
                     FavoritesDatabase::class.java,
                     "movie_database"
-                ).build()
+                ).fallbackToDestructiveMigration()
+                 .build()
                 INSTANCE = instance
                 // return instance
                 instance
