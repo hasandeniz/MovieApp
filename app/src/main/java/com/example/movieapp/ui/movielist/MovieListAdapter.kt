@@ -53,10 +53,8 @@ class MovieListAdapter(private val clickListener: FavoritesListener,
                         clickListener.onClick(uiModel.movie,it)
                     }
                 }
-
             }
         }
-
     }
 
     class MoviesViewHolder(private val binding: MovieListItemBinding) : ViewHolder(binding.root) {

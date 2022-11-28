@@ -1,5 +1,10 @@
 package com.example.movieapp.ui.moviedetails
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -96,9 +101,38 @@ class MovieDetailsViewModel @Inject constructor(private var movieRepository: Mov
         }
     }
 
-    data class MovieDetailsViewState(
-        val isLoading: Boolean? = false,
-        val movieDetailsResponse: LiveData<MovieDetailsResponse>? = null,
-        val consumableErrors: List<ConsumableError>? = null
-    )
+    fun isOnline(context: Context): Boolean {
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val capabilities =
+                connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+            if (capabilities != null) {
+                if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_CELLULAR")
+                    return true
+                } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_WIFI")
+                    return true
+                } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
+                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_ETHERNET")
+                    return true
+                }
+            }
+            return false
+        }else{
+            if (connectivityManager.activeNetworkInfo != null && connectivityManager.activeNetworkInfo!!.isConnectedOrConnecting) {
+                return true
+            }
+            return false
+        }
+
+    }
 }
+
+data class MovieDetailsViewState(
+    val isLoading: Boolean? = false,
+    val movieDetailsResponse: LiveData<MovieDetailsResponse>? = null,
+    val consumableErrors: List<ConsumableError>? = null
+)

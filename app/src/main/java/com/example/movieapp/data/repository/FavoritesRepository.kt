@@ -10,13 +10,11 @@ class FavoritesRepository(private var favoritesDataSource: FavoritesDataSource) 
 
     suspend fun addMovieToFavorites(movie: Movie) = favoritesDataSource.addMovieToFavorites(movie)
 
-    suspend fun removeMovieFromFavorites(id: Int) = favoritesDataSource.removeMovieFromFavorites(id)
-
-    suspend fun getFavoriteMovieByImdbId(id: String): Movie = favoritesDataSource.getFavoriteMovieByImdbId(id)
+    suspend fun removeMovieFromFavorites(movie: Movie) = favoritesDataSource.removeMovieFromFavorites(movie)
 
     suspend fun saveMovieDetails(movieDetailsResponse: MovieDetailsResponse) = favoritesDataSource.saveMovieDetails(movieDetailsResponse)
 
-    suspend fun deleteMovieDetails(id: Int) = favoritesDataSource.deleteMovieDetails(id)
+    suspend fun deleteMovieDetails(imdbId: String) = favoritesDataSource.deleteMovieDetails(imdbId)
 
     suspend fun getMovieDetailsByImdbIdFromDb(imdbId: String): MovieDetailsResponse = favoritesDataSource.getMovieDetailsByImdbIdFromDb(imdbId)
 }

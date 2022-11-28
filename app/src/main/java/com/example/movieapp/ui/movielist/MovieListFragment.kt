@@ -1,11 +1,6 @@
 package com.example.movieapp.ui.movielist
 
-import android.content.Context
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.ImageButton
 import android.widget.Toast
@@ -21,6 +16,7 @@ import androidx.paging.LoadState
 import androidx.paging.PagingData
 import com.example.movieapp.R
 import com.example.movieapp.databinding.FragmentMovieListBinding
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -48,28 +44,22 @@ class MovieListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         movieListViewModel.getAllFavorites()
         movieListAdapter = MovieListAdapter(MovieListAdapter.FavoritesListener { movie, button ->
-
-            if (isOnline()){
-                if (button.tag == "not favorite") {
+            if (button.tag == "not favorite") {
+                if (movieListViewModel.isOnline(requireContext())){
                     button.tag = "favorite"
                     (button as ImageButton).setImageResource(R.drawable.ic_favorite)
                     movieListViewModel.saveMovieToFavorites(movie)
                     movieListViewModel.saveMovieDetailsToFavorites(movie)
-                    Toast.makeText(context,"${movie.title} Added to Favorites",Toast.LENGTH_SHORT).show()
-                }
-                else{
-                    button.tag = "not favorite"
-                    (button as ImageButton).setImageResource(R.drawable.ic_not_favorite)
-                    movieListViewModel.removeMovieFromFavorites(movie)
-                    movieListViewModel.removeMovieDetailsFromFavorites(movie)
-                    Toast.makeText(context,"${movie.title} Removed from Favorites",Toast.LENGTH_SHORT).show()
-                }
+                    Snackbar.make(view,"${movie.title} Added to Favorites",Snackbar.LENGTH_SHORT).show()
+                }else
+                    Toast.makeText(context,"No internet connection!",Toast.LENGTH_SHORT).show()
             }else{
-                Toast.makeText(context,"No internet connection",Toast.LENGTH_SHORT).show()
-
+                button.tag = "not favorite"
+                (button as ImageButton).setImageResource(R.drawable.ic_not_favorite)
+                movieListViewModel.removeMovieFromFavorites(movie)
+                movieListViewModel.removeMovieDetailsFromFavorites(movie)
+                Snackbar.make(view,"${movie.title} Removed from Favorites",Snackbar.LENGTH_SHORT).show()
             }
-
-
         },movieListViewModel.favorites)
 
         binding.adapter = movieListAdapter
@@ -80,42 +70,12 @@ class MovieListFragment : Fragment() {
 
     }
 
-    private fun isOnline(): Boolean {
-        val connectivityManager =
-            requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val capabilities =
-                connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
-            if (capabilities != null) {
-                if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
-                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_CELLULAR")
-                    return true
-                } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
-                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_WIFI")
-                    return true
-                } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
-                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_ETHERNET")
-                    return true
-                }
-            }
-            return false
-        }else{
-            if (connectivityManager.activeNetworkInfo != null && connectivityManager.activeNetworkInfo!!.isConnectedOrConnecting) {
-                return true
-            }
-            return false
-        }
-
-    }
-
     private fun adjustToolbarMenu(view: View){
         val menuHost = requireActivity() as MenuHost
         val menuProvider: MenuProvider = object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menu.clear()
                 menuInflater.inflate(R.menu.dummy, menu)
-
             }
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 when(menuItem.itemId){

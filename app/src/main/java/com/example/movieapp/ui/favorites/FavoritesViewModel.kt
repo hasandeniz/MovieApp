@@ -30,8 +30,7 @@ class FavoritesViewModel @Inject constructor(private var favoritesRepository: Fa
 
     fun removeMovieFromFavorites(movie: Movie) {
         viewModelScope.launch(Dispatchers.IO) {
-            val movieId = favoritesRepository.getFavoriteMovieByImdbId(movie.imdbId).id
-            favoritesRepository.removeMovieFromFavorites(movieId)
+            favoritesRepository.removeMovieFromFavorites(movie)
             getFavorites()
             Log.d("MovieListViewModel", "${movie.title} removed from database")
         }
@@ -39,8 +38,7 @@ class FavoritesViewModel @Inject constructor(private var favoritesRepository: Fa
 
     fun removeMovieDetailsFromFavorites(movie: Movie) {
         viewModelScope.launch(Dispatchers.IO) {
-            val id = favoritesRepository.getMovieDetailsByImdbIdFromDb(movie.imdbId).id
-            favoritesRepository.deleteMovieDetails(id)
+            favoritesRepository.deleteMovieDetails(movie.imdbId)
             Log.d("MovieListViewModel", "${movie.title} details removed from database")
         }
     }

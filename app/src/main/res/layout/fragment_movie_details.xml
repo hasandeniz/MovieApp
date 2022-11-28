@@ -12,6 +12,10 @@
             name="details"
             type="com.example.movieapp.data.model.MovieDetailsResponse" />
 
+        <variable
+            name="isOnline"
+            type="Boolean" />
+
         <import type="android.view.View" />
     </data>
 
@@ -25,7 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fillViewport="true"
-            android:visibility="@{isLoading ? View.GONE : View.VISIBLE}"
+            android:visibility="@{isOnline ? (isLoading ? View.GONE : View.VISIBLE) : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -1,7 +1,6 @@
 package com.example.movieapp.ui.moviedetails
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.core.view.MenuHost
@@ -35,21 +34,28 @@ class MovieDetailsFragment : Fragment() {
         return binding.root
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         movieDetailsViewModel.isFavorite(args.imdbId)
         adjustFavoritesIcon()
 
-        if (args.isFavorite)
+        if (args.isFavorite){
+            binding.isOnline = true
             movieDetailsViewModel.getMovieDetailsByImdbIdFromDb(args.imdbId)
-        else
-            movieDetailsViewModel.getMovieDetailsByImdbIdFromApi(args.imdbId)
+        }
+        else{
+            if (movieDetailsViewModel.isOnline(requireContext())){
+                movieDetailsViewModel.getMovieDetailsByImdbIdFromApi(args.imdbId)
+                binding.isOnline = true
+            }
+            else{
+                binding.isOnline = movieDetailsViewModel.isOnline(requireContext())
+                Toast.makeText(context, "No internet connection!", Toast.LENGTH_SHORT).show()
+            }
+        }
 
         observeData()
-
-
     }
 
     private fun adjustFavoritesIcon(){
@@ -70,6 +76,7 @@ class MovieDetailsFragment : Fragment() {
             menuHost.addMenuProvider(menuProvider, viewLifecycleOwner, Lifecycle.State.RESUMED)
         }
     }
+
     private fun observeData() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -84,7 +91,6 @@ class MovieDetailsFragment : Fragment() {
                     binding.isLoading = movieViewState.isLoading
 
                     movieViewState.movieDetailsResponse?.observe(viewLifecycleOwner){
-                        Log.d("logger", it.toString())
                         binding.details = it
                     }
                 }

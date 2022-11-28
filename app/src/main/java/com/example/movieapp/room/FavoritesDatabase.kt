@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import com.example.movieapp.data.model.Movie
 import com.example.movieapp.data.model.MovieDetailsResponse
 
-@Database(entities = [Movie::class, MovieDetailsResponse::class], version = 2, exportSchema = false)
+@Database(entities = [Movie::class, MovieDetailsResponse::class], version = 4, exportSchema = false)
 abstract class FavoritesDatabase: RoomDatabase() {
     abstract fun movieDatabaseDao(): FavoritesDao
 
@@ -23,7 +23,6 @@ abstract class FavoritesDatabase: RoomDatabase() {
                 ).fallbackToDestructiveMigration()
                  .build()
                 INSTANCE = instance
-                // return instance
                 instance
             }
         }

@@ -43,7 +43,7 @@ class FavoritesAdapter(private val clickListener: MovieListAdapter.FavoritesList
 
     class FavoritesListUtil : DiffUtil.ItemCallback<Movie>() {
         override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean {
-            return oldItem.id == newItem.id
+            return oldItem.imdbId == newItem.imdbId
         }
 
         override fun areContentsTheSame(oldItem: Movie, newItem: Movie): Boolean {
