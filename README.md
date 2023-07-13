@@ -2,7 +2,7 @@
 
 ## Description
 
-The Movies App is an Android application developed in Kotlin that enables users to search for their favorite movies, access detailed information about them, and add them to their favorites. This app follows the MVVM architecture pattern and leverages various widely-used Jetpack libraries, including Retrofit, Room Database, Hilt, Data Binding, Navigation, Glide, and Paging 3.
+The Movies App is an Android application developed in Kotlin that enables users to search for their favorite movies, access detailed information about them, and add them to their favorites. This app follows the MVVM architecture pattern and leverages various widely-used Jetpack and third party libraries, including Retrofit, Room Database, Hilt, Data Binding, Navigation, Glide, and Paging 3.
 
 ## Features
 
