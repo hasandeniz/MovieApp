@@ -43,9 +43,9 @@ https://github.com/hasandeniz/MovieApp/assets/37264787/57623ca4-daf3-422f-b4d0-b
 
 To install the Movies App, follow these steps:
 
-1. Clone the repository to your local machine using `https://github.com/hasandeniz/MovieApp.git`.
+1. Clone or download the project code from the repository.
 2. Open the project in Android Studio.
-3. Build and run the app on an emulator or physical device.
+3. Build and run the app on an Android emulator or device.
 
 ## Technologies
 
