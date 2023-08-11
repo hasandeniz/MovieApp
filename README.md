@@ -49,7 +49,7 @@ To install the Movies App, follow these steps:
 
 ## Technologies
 
-The Movies App was developed by Ali Türk and was built using the following technologies:
+The Movies App was developed by Hasan Deniz and was built using the following technologies:
 
 - Kotlin
 - Android Studio
