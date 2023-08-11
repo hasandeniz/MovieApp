@@ -41,7 +41,7 @@ https://github.com/hasandeniz/MovieApp/assets/37264787/57623ca4-daf3-422f-b4d0-b
 
 ## Installation
 
-To install the Movies App, follow these steps:
+To install the Movie App, follow these steps:
 
 1. Clone or download the project code from the repository.
 2. Open the project in Android Studio.
@@ -49,7 +49,7 @@ To install the Movies App, follow these steps:
 
 ## Technologies
 
-The Movies App was developed by Hasan Deniz and was built using the following technologies:
+The following technologies and libraries were used in the development of this app:
 
 - Kotlin
 - Android Studio
